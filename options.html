@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Content Tracker - Settings</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 10px;
+    }
+
+    .section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .section h2 {
+      margin-top: 0;
+      color: #333;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .setting-group {
+      margin: 15px 0;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+    }
+
+    .setting-label {
+      font-weight: 500;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .setting-description {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 5px 0;
+    }
+
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .category-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .category-item {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .status-message {
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      display: none;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 Content Tracker Settings</h1>
+    <p>Customize your browsing tracking preferences</p>
+  </div>
+
+  <div id="status" class="status-message"></div>
+
+  <div class="section">
+    <h2>⚙️ General Settings</h2>
+    
+    <div class="setting-group">
+      <label class="setting-label" for="trackingEnabled">Enable Tracking</label>
+      <div class="setting-description">Turn on/off automatic content tracking</div>
+      <input type="checkbox" id="trackingEnabled" checked>
+    </div>
+
+    <div class="setting-group">
+      <label class="setting-label" for="timeTracking">Time Tracking Precision</label>
+      <div class="setting-description">How frequently to update time tracking (lower = more accurate, higher = better performance)</div>
+      <select id="timeTracking">
+        <option value="1000">High (1 second)</option>
+        <option value="5000" selected>Medium (5 seconds)</option>
+        <option value="10000">Low (10 seconds)</option>
+      </select>
+    </div>
+
+    <div class="setting-group">
+      <label class="setting-label" for="dataRetention">Data Retention</label>
+      <div class="setting-description">How long to keep browsing data</div>
+      <select id="dataRetention">
+        <option value="7">1 Week</option>
+        <option value="30" selected>1 Month</option>
+        <option value="90">3 Months</option>
+        <option value="365">1 Year</option>
+        <option value="-1">Forever</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📂 Content Categories</h2>
+    
+    <div class="setting-group">
+      <label class="setting-label">Current Categories</label>
+      <div class="setting-description">These are the categories used to classify your browsing content</div>
+      <div id="categoriesList" class="category-list">
+        <!-- Categories will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <label class="setting-label" for="newCategoryName">Add Custom Category</label>
+      <div class="setting-description">Create a new category with custom keywords</div>
+      <input type="text" id="newCategoryName" placeholder="Category name (e.g., 'Cooking')">
+      <textarea id="newCategoryKeywords" placeholder="Keywords separated by commas (e.g., recipe, cooking, kitchen, food)"></textarea>
+      <button onclick="addCustomCategory()">Add Category</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🔔 Notifications</h2>
+    
+    <div class="setting-group">
+      <label class="setting-label" for="dailyReport">Daily Report</label>
+      <div class="setting-description">Show a daily summary notification</div>
+      <input type="checkbox" id="dailyReport">
+    </div>
+
+    <div class="setting-group">
+      <label class="setting-label" for="timeLimit">Time Limit Alerts</label>
+      <div class="setting-description">Get notified when spending too much time in a category</div>
+      <input type="checkbox" id="timeLimit">
+      <input type="number" id="timeLimitHours" placeholder="Hours" min="1" max="12" value="2" style="width: 100px; display: inline-block; margin-left: 10px;">
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>💾 Data Management</h2>
+    
+    <div class="setting-group">
+      <label class="setting-label">Export Data</label>
+      <div class="setting-description">Download your browsing data for backup or analysis</div>
+      <button onclick="exportAllData()">📤 Export All Data</button>
+      <button onclick="exportThisWeek()">📊 Export This Week</button>
+    </div>
+
+    <div class="setting-group">
+      <label class="setting-label">Import Data</label>
+      <div class="setting-description">Import previously exported data</div>
+      <input type="file" id="importFile" accept=".json">
+      <button onclick="importData()">📥 Import Data</button>
+    </div>
+
+    <div class="setting-group">
+      <label class="setting-label">Reset Settings</label>
+      <div class="setting-description">Clear all data and reset to default settings</div>
+      <button onclick="resetAllData()" style="background: #dc3545;">🗑️ Reset Everything</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>ℹ️ About</h2>
+    <p><strong>Content Tracker</strong> v1.0</p>
+    <p>A privacy-focused browser extension that helps you understand your browsing patterns.</p>
+    <p>All data is stored locally on your device and never sent to external servers.</p>
+    <button onclick="window.open('https://github.com/your-repo/content-tracker', '_blank')">📚 Documentation</button>
+    <button onclick="reportIssue()">🐛 Report Issue</button>
+  </div>
+
+  <script>
+    // Settings management functionality
+    const defaultCategories = {
+      'News': ['news', 'reuters', 'cnn', 'bbc', 'nytimes', 'guardian', 'article', 'breaking'],
+      'Social Media': ['facebook', 'twitter', 'instagram', 'linkedin', 'reddit', 'tiktok', 'snapchat'],
+      'Entertainment': ['youtube', 'netflix', 'spotify', 'twitch', 'entertainment', 'movie', 'music', 'game'],
+      'Shopping': ['amazon', 'ebay', 'shop', 'store', 'buy', 'cart', 'product', 'price'],
+      'Education': ['wikipedia', 'coursera', 'udemy', 'khan', 'edu', 'learn', 'course', 'tutorial'],
+      'Work/Professional': ['slack', 'zoom', 'teams', 'office', 'work', 'meeting', 'email', 'professional'],
+      'Technology': ['github', 'stackoverflow', 'tech', 'programming', 'developer', 'code', 'software'],
+      'Finance': ['bank', 'finance', 'investment', 'stock', 'crypto', 'trading', 'money'],
+      'Health': ['health', 'medical', 'doctor', 'fitness', 'nutrition', 'exercise'],
+      'Travel': ['booking', 'travel', 'hotel', 'flight', 'trip', 'vacation']
+    };
+
+    // Initialize settings page
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      displayCategories();
+      setupEventListeners();
+    });
+
+    function setupEventListeners() {
+      // Save settings when changed
+      document.querySelectorAll('input, select').forEach(element => {
+        element.addEventListener('change', saveSettings);
+      });
+    }
+
+    async function loadSettings() {
+      try {
+        const settings = await chrome.storage.local.get('settings');
+        if (settings.settings) {
+          // Apply saved settings to form
+          Object.entries(settings.settings).forEach(([key, value]) => {
+            const element = document.getElementById(key);
+            if (element) {
+              if (element.type === 'checkbox') {
+                element.checked = value;
+              } else {
+                element.value = value;
+              }
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      }
+    }
+
+    async function saveSettings() {
+      const settings = {};
+      document.querySelectorAll('input, select').forEach(element => {
+        if (element.id) {
+          if (element.type === 'checkbox') {
+            settings[element.id] = element.checked;
+          } else {
+            settings[element.id] = element.value;
+          }
+        }
+      });
+
+      try {
+        await chrome.storage.local.set({ settings });
+        showStatus('Settings saved successfully!', 'success');
+      } catch (error) {
+        console.error('Error saving settings:', error);
+        showStatus('Error saving settings', 'error');
+      }
+    }
+
+    function displayCategories() {
+      const container = document.getElementById('categoriesList');
+      let html = '';
+
+      Object.entries(defaultCategories).forEach(([category, keywords]) => {
+        html += `
+          <div class="category-item">
+            <strong>${category}</strong><br>
+            <small>${keywords.slice(0, 5).join(', ')}${keywords.length > 5 ? '...' : ''}</small>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function addCustomCategory() {
+      const name = document.getElementById('newCategoryName').value.trim();
+      const keywords = document.getElementById('newCategoryKeywords').value.trim();
+
+      if (!name || !keywords) {
+        showStatus('Please enter both category name and keywords', 'error');
+        return;
+      }
+
+      // TODO: Implement custom category addition
+      showStatus('Custom categories feature coming soon!', 'success');
+      
+      // Clear fields
+      document.getElementById('newCategoryName').value = '';
+      document.getElementById('newCategoryKeywords').value = '';
+    }
+
+    async function exportAllData() {
+      try {
+        const data = await chrome.storage.local.get(null);
+        const dataStr = JSON.stringify(data, null, 2);
+        downloadData(dataStr, 'content-tracker-full-export');
+        showStatus('Data exported successfully!', 'success');
+      } catch (error) {
+        console.error('Error exporting data:', error);
+        showStatus('Error exporting data', 'error');
+      }
+    }
+
+    async function exportThisWeek() {
+      try {
+        const weekData = {};
+        const now = new Date();
+        
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(now);
+          date.setDate(date.getDate() - i);
+          const dateStr = date.toDateString();
+          const dayData = await chrome.storage.local.get(dateStr);
+          if (dayData[dateStr]) {
+            weekData[dateStr] = dayData[dateStr];
+          }
+        }
+
+        const dataStr = JSON.stringify(weekData, null, 2);
+        downloadData(dataStr, 'content-tracker-week-export');
+        showStatus('Week data exported successfully!', 'success');
+      } catch (error) {
+        console.error('Error exporting week data:', error);
+        showStatus('Error exporting week data', 'error');
+      }
+    }
+
+    function downloadData(dataStr, filename) {
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${filename}-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importData() {
+      const fileInput = document.getElementById('importFile');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        showStatus('Please select a file to import', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          await chrome.storage.local.set(data);
+          showStatus('Data imported successfully!', 'success');
+        } catch (error) {
+          console.error('Error importing data:', error);
+          showStatus('Error importing data - invalid file format', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function resetAllData() {
+      if (confirm('Are you sure you want to reset all data and settings? This cannot be undone.')) {
+        try {
+          await chrome.storage.local.clear();
+          showStatus('All data cleared successfully!', 'success');
+          // Reload page to reset form
+          setTimeout(() => location.reload(), 1000);
+        } catch (error) {
+          console.error('Error clearing data:', error);
+          showStatus('Error clearing data', 'error');
+        }
+      }
+    }
+
+    function reportIssue() {
+      window.open('mailto:support@example.com?subject=Content Tracker Issue&body=Please describe the issue you encountered:', '_blank');
+    }
+
+    function showStatus(message, type) {
+      const statusEl = document.getElementById('status');
+      statusEl.textContent = message;
+      statusEl.className = `status-message ${type}`;
+      statusEl.style.display = 'block';
+      
+      setTimeout(() => {
+        statusEl.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

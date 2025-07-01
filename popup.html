@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 400px;
+      min-height: 500px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 300;
+    }
+
+    .stats-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-item:last-child {
+      border-bottom: none;
+    }
+
+    .category-name {
+      font-weight: 500;
+    }
+
+    .category-count {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 8px;
+      border-radius: 15px;
+      font-size: 12px;
+    }
+
+    .time-display {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .summary {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      opacity: 0.7;
+    }
+
+    .chart-container {
+      margin: 15px 0;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      position: relative;
+    }
+
+    .bar {
+      background: linear-gradient(90deg, #4facfe, #00f2fe);
+      margin: 5px 0;
+      border-radius: 3px;
+      height: 20px;
+      position: relative;
+      transition: width 0.5s ease;
+    }
+
+    .bar-label {
+      position: absolute;
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .tab.active {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .tab:first-child {
+      border-radius: 5px 0 0 5px;
+    }
+
+    .tab:last-child {
+      border-radius: 0 5px 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 Content Tracker</h1>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="today">Today</button>
+    <button class="tab" data-tab="week">Week</button>
+    <button class="tab" data-tab="chart">Chart</button>
+  </div>
+
+  <div id="loading" class="loading">
+    Loading your browsing data...
+  </div>
+
+  <div id="content" style="display: none;">
+    <div id="stats-container" class="stats-container">
+      <!-- Stats will be populated by JavaScript -->
+    </div>
+
+    <div id="chart-container" class="chart-container" style="display: none;">
+      <div id="chart-content">
+        <!-- Chart will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <div class="summary" id="summary">
+      <!-- Summary will be populated by JavaScript -->
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="exportBtn">📤 Export</button>
+      <button class="btn" id="clearBtn">🗑️ Clear</button>
+      <button class="btn" id="settingsBtn">⚙️ Settings</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
